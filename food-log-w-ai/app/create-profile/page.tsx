@@ -1,3 +1,5 @@
+"use client"
+
 import { useUser } from "@clerk/nextjs";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";
