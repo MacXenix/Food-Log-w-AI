@@ -33,7 +33,7 @@ export default function RootLayout({
             className={`${geistSans.variable} ${geistMono.variable} antialiased `}
           >
             <NavBar />
-            <div className=" mx-auto pt-16 ">{children}</div>
+            <div className=" mx-auto pt-16 bg-[#aacfdd]/20">{children}</div>
           </body>
         </html>
       </ReactQueryClientProvider>
