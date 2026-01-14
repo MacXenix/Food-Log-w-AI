@@ -20,7 +20,7 @@ export default function Home() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-            <Link href="/food-log">
+            <Link href="/sign-up">
               <button className="w-full sm:w-auto bg-[#fe875d] hover:bg-[#fe875d]/90 text-white px-8 py-4 rounded-2xl font-bold shadow-lg shadow-[#fe875d]/20 transition-transform hover:-translate-y-1">
                 {" "}
                 Start Tracking Now{" "}
