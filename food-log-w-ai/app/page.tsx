@@ -1,65 +1,51 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <main className="min-h-screen flex flex-col items-center justify-center bg-[#aacfdd]/20 px-6">
+      <div className="max-w-5xl w-full grid md:grid-cols-2 gap-12  items-center">
+        <div className="space-y-8 text-center md:text-left">
+          <span className="inline-bloc py-1 px-3 rounded-full bg-[#fe1100]/10 text-[#fe1100] text-sm font-bold tracking-wide">
+            AI-POWERED NUTRITION
+          </span>
+          <h1 className="text-5xl md:text-7xl font-extrabold text-[#37375e] leading-tight">
+            Eat Smarter, <br />
+            <span className="text-[#fe875d]">not harder.</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="text-xl text-[#356288] max-w-lg mx-auto md:mx-0 leading-relaxed">
+            Your personal AI food logger. Snap a photo of your meal and let us
+            handle the calories, macros, and nutrients instantly.
           </p>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+            <Link href="/food-log">
+              <button className="w-full sm:w-auto bg-[#fe875d] hover:bg-[#fe875d]/90 text-white px-8 py-4 rounded-2xl font-bold shadow-lg shadow-[#fe875d]/20 transition-transform hover:-translate-y-1">
+                {" "}
+                Start Tracking Now{" "}
+              </button>
+            </Link>
+            
+            <button className="w-full sm:w-auto text-[#37375e] font-bold px-8 py-4 hover:bg-[#37375e]/5 rounded-2xl transition-colors">
+            Learn More
+            </button>
+          </div> 
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Hero Image */}
+        <div className="relative flex justfiy-center items-center">
+          <div className="absolute w-[400px] h-[400px] bg-[#aacfdd] rounded-full blur-3xl opcaity-40 -z-10 animate-pulse"></div>
+          <Image
+           src="/MofuLogoEating.png"
+           alt="Mofu Eating Logo"
+           width={450}
+           height={450}
+           className="drop-shadow-2xl hover:scale-105 transition-transform duration-500 ease-in-out"
+           priority
+          />
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
