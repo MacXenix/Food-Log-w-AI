@@ -1,9 +1,94 @@
+"use client";
 import { availablePlans } from "@/lib/plans";
+import { useUser } from "@clerk/nextjs";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import toast, {Toaster} from "react-hot-toast";
+
+type SubscribeResponse = {
+  url: string;
+};
+
+type SubscribeError = {
+  error: string;
+};
+
+async function subscribeToPlan(
+  planType: string,
+  userId: string,
+  email: string
+): Promise<SubscribeResponse> {
+  const response = await fetch("/api/checkout", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+    planType,
+    userId,
+    email,
+  }),
+    
+  });
+
+  if (!response.ok) {
+    const errorData: SubscribeError = await response.json();
+    throw new Error(errorData.error || "Something went wrong.");
+  }
+
+  const data: SubscribeResponse = await response.json();
+
+  return data;
+}
 
 export default function Subscribe() {
+  const { user } = useUser();
+  const router = useRouter();
+
+  const userId = user?.id;
+  const email = user?.emailAddresses[0].emailAddress || "";
+
+  const { mutate, isPending } = useMutation<
+    SubscribeResponse,
+    SubscribeError,
+    { planType: string }
+  >({
+    mutationFn: async ({ planType }) => {
+      if (!userId) {
+        throw new Error("User not signed in.");
+      }
+      return subscribeToPlan(planType, userId, email);
+    },
+    
+    onMutate: () => {
+      toast.loading("Processing your subscription...");
+    },
+
+    onSuccess: (data) => {
+      window.location.href = data.url;
+    },
+
+    onError: () => {
+      toast.error("Something went wrong");
+    },
+  });
+
+  function handleSubscribe(planType: string) {
+    if (!userId) {
+      router.push("/sign-up");
+      return;
+    }
+
+    mutate({ planType });
+  }
+
   return (
+
     <div className="min-h-screen bg-[#aacfdd]/20 py-20 px-4 sm:px-6 lg:px-8">
       {" "}
+      <Toaster position="top-center" toastOptions={{className: 'z-[99999]', style: {zIndex: 99999,},}}>
+
+      </Toaster>
       <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
         {" "}
         <h2 className="text-4xl md:text-5xl font-extrabold text-[#37375e]">
@@ -41,9 +126,12 @@ export default function Subscribe() {
                 <div className="flex justify-center items-baseline text-[#37375e]">
                   <span className="text-5xl font-extrabold">
                     {" "}
-                    ₱{plan.amount}{" "}
+                    ${plan.amount}{" "}
                   </span>
-                  <span className="text-lg ml-2 text-[#356288]"> /{plan.interval}</span>
+                  <span className="text-lg ml-2 text-[#356288]">
+                    {" "}
+                    /{plan.interval}
+                  </span>
                 </div>
                 <p className="mt-4 text-[#356288]">{plan.description}</p>
               </div>
@@ -69,9 +157,11 @@ export default function Subscribe() {
                     ? "bg-[#fe875d] text-white hover:bg-[#fe875d]/90 shadow-[#fe875d]/30"
                     : " bg-[#37375e] text-white hover:bg-[#37375e]/90 shadow-[#37375e]/30"
                 }`}
+                onClick={() => handleSubscribe(plan.interval)}
+                disabled={isPending}
               >
                 {" "}
-                Subscribe {plan.name}
+                {isPending ? "Please wait..." : `Subscribe ${plan.name}`}
               </button>
             </div>
           </div>
