@@ -11,15 +11,30 @@ type ApiResponse = {
 };
 
 async function createProfileRequest(){
-    const response = await fetch('/api/create-profile', {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    })
+    console.log("📞 Calling /api/create-profile...");
+    try {
+        const response = await fetch('/api/create-profile', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
 
-    const data = await response.json()
-    return data as ApiResponse
+        console.log("📥 Response status:", response.status, response.statusText);
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("❌ API error response:", errorData);
+            throw new Error(errorData.error || `Failed to create profile: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log("✅ API success response:", data);
+        return data as ApiResponse;
+    } catch (error) {
+        console.error("❌ Error in createProfileRequest:", error);
+        throw error;
+    }
 }
 
 export default function CreateProfile(){
@@ -28,18 +43,22 @@ export default function CreateProfile(){
     const {mutate, isPending} = useMutation<ApiResponse, Error>({
         mutationFn: createProfileRequest,
         onSuccess: (data) => {
+            console.log("✅ Profile creation successful:", data.message);
             router.push("/subscribe");
         },
         onError: (error) => {
-            console.log(error);
+            console.error("❌ Profile creation failed:", error.message);
+            // You might want to show a toast notification here
         },
     });
 
     useEffect(() => {
+        console.log("🔄 CreateProfile useEffect triggered:", { isLoaded, isSignedIn, isPending });
         if(isLoaded && isSignedIn && !isPending){
+            console.log("🚀 Calling mutate to create profile...");
             mutate();
         }
-    }, [isLoaded, isSignedIn]);
+    }, [isLoaded, isSignedIn, isPending, mutate]);
 
     return <div> Processing sign in...</div>;
 }

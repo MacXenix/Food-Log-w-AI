@@ -61,4 +61,4 @@ const priceIDMap: Record<string, string> = {
   year: process.env.STRIPE_PRICE_YEARLY!,
 
 }
-export const getPriceIDFromType = (planType: string) => priceIDMap[planType]
+export const getPriceIDFromType = (planType: string) => priceIDMap[planType];
