@@ -1,5 +1,7 @@
 "use client";
+import { Spinner } from "@/components/spinner";
 import { useMutation } from "@tanstack/react-query";
+import { Dynalight } from "next/font/google";
 import React from "react";
 
 interface MealPlanInput {
@@ -34,7 +36,7 @@ async function generateMealPlan(payload: MealPlanInput) {
 }
 
 export default function FoodLogDashboard() {
-  const { mutate, isPending, data } = useMutation<
+  const { mutate, isPending, data, isSuccess } = useMutation<
     MealPlanResponse,
     Error,
     MealPlanInput
@@ -58,13 +60,27 @@ export default function FoodLogDashboard() {
     mutate(payload);
   }
 
-  if (data){
+  const daysOfTheWeek = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday",
+  ];
+  const getMealPlanForDay = (day: string): DailyMealPlan | undefined => {
+    if (!data?.mealplan) return undefined;
+    return data?.mealplan[day];
+  };
+
+  if (data) {
     console.log(data);
   }
 
   return (
     <div className="min-h-screen bg-[#37375e] flex items-center justify-center p-4 md:p-8 font-sans">
-      <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden">
+      <div className="w-full max-w-6xl bg-white rounded-3xl shadow-2xl transition-all overflow-hidden">
         {/* Header Section */}
         <div className="bg-[#356288] p-8 text-center relative overflow-hidden">
           <div className="relative z-10">
@@ -201,8 +217,84 @@ export default function FoodLogDashboard() {
             <span className="w-2 h-8 bg-[#fe875d] rounded-full inline-block"></span>
             Weekly Meal Plan
           </h2>
-          <div className="p-8 border-2 border-dashed border-[#aacfdd] rounded-xl text-center text-[#356288]">
-            <p>Your AI-generated plan will appear here.</p>
+
+          <div className="p-8 border-2 border-dashed border-[#5dc7ed] rounded-xl text-center text-[#356288]">
+            {data?.mealplan && isSuccess ? (
+              <div className="space-y-6">
+                {daysOfTheWeek.map((day) => {
+                  const dailyMeals = getMealPlanForDay(day);
+
+                  if (!dailyMeals) return null;
+                  return (
+                    <div
+                      key={day}
+                      className="bg-white p-6 rounded-xl shadow-sm border border-[#aacfdd]/50 hover:shadow-md transition-shadow duration-200"
+                    >
+                      <h3 className="text-xl font-bold text-[#356288] mb-4 pb-2 border-gray-100">
+                        {day}
+                      </h3>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {/*Breakfast  */}
+                        {dailyMeals.Breakfast && (
+                          <div className="bg-orange-50 p-3 rounded-lg border border-orange-100">
+                            <span className="text-xs font-bold text-[#fe875d] uppercase tracking-wider block mb-1">
+                              Breakfast
+                            </span>
+                            <p className="text-[#37375e] text-sm font-medium">
+                              {dailyMeals.Breakfast}
+                            </p>
+                          </div>
+                        )}
+                        {/*Lunch  */}
+                        {dailyMeals.Lunch && (
+                          <div className="bg-orange-50 p-3 rounded-lg border border-blue-100">
+                            <span className="text-xs font-bold text-[#356288] uppercase tracking-wider block mb-1">
+                              Breakfast
+                            </span>
+                            <p className="text-[#37375e] text-sm font-medium">
+                              {dailyMeals.Lunch}
+                            </p>
+                          </div>
+                        )}
+                        {/*Dinner  */}
+                        {dailyMeals.Dinner && (
+                          <div className="bg-orange-50 p-3 rounded-lg border border-indigo-100">
+                            <span className="text-xs font-bold text-[#37375e] uppercase tracking-wider block mb-1">
+                              Breakfast
+                            </span>
+                            <p className="text-[#37375e] text-sm font-medium">
+                              {dailyMeals.Dinner}
+                            </p>
+                          </div>
+                        )}
+                        {/*Snacks  */}
+                        {dailyMeals.Snacks && (
+                          <div className="bg-orange-50 p-3 rounded-lg border border-green-100">
+                            <span className="text-xs font-bold text-green-600 uppercase tracking-wider block mb-1">
+                              Snacks
+                            </span>
+                            <p className="text-[#37375e] text-sm font-medium">
+                              {dailyMeals.Snacks}
+                            </p>
+                          </div>
+                        )}
+                        
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : isPending ? (
+              <div className="p-12 border-2 border-dashed border-[#aacfdd] rounded-xl flex flex-col items-center justify-center text-center gap-4">
+                <Spinner className="h-10 w-10 animate-spin text-[#fe875d]" />
+                <p className="text-[#356288] font-medium">
+                  Curating your menu... This might take a moment.{" "}
+                </p>
+              </div>
+            ) : (
+              <p>Fill out the form above to generate our plan.</p>
+            )}
           </div>
         </div>
       </div>

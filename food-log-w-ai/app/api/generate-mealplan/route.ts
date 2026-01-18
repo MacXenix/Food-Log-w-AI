@@ -36,7 +36,9 @@ export async function POST(request: NextRequest) {
     `;
 
     const response = await openAI.chat.completions.create({
-      model: "meta-llama/llama-3.2-3b-instruct:free",
+      model: "meta-llama/llama-3.3-70b-instruct:free",
+      // model: "deepseek/deepseek-r1-distill-llama-70b:free",
+      // model: "meta-llama/llama-3.2-3b-instruct:free",
       //   model: "google/gemini-2.0-flash-exp:free",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.7,
